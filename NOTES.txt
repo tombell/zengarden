@@ -3,9 +3,22 @@ Zen Garden
 
 A zen garden like static site generator.
 
-MUST HAVES
-----------
+MUST
+----
 
+- sensible defaults
+- markdown (blackfriday)
+- templating (html/template)
+- pagination
 
-MUST NOT HAVES
---------------
+MAYBE
+-----
+
+- syntax highlighting (chroma)
+- plugin/extensions
+- scss
+
+MUST NOT
+--------
+
+- many options
