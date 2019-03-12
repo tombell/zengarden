@@ -1,0 +1,11 @@
+Zen Garden
+==========
+
+A zen garden like static site generator.
+
+MUST HAVES
+----------
+
+
+MUST NOT HAVES
+--------------
