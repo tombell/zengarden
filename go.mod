@@ -1,3 +1,3 @@
-module github.com/tombell/zen-garden
+module github.com/tombell/zengarden
 
 go 1.12
