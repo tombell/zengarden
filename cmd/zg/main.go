@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/tombell/zengarden"
@@ -25,9 +24,6 @@ func usage() {
 	os.Exit(2)
 }
 
-func validateFlags() {
-}
-
 func main() {
 	flag.Usage = usage
 	flag.Parse()
@@ -37,9 +33,14 @@ func main() {
 		os.Exit(0)
 	}
 
-	logger := log.New(os.Stderr, "[zen] ", log.LstdFlags)
+	cfg := &zengarden.Config{
+		Source:    ".",
+		Target:    "_site",
+		Permalink: "/post/:title/",
+		Excludes:  []string{"README.md"},
+	}
 
-	if err := zengarden.Run(); err != nil {
-		logger.Fatalf("error while running: %v\n", err)
+	if err := zengarden.Run(cfg); err != nil {
+		fmt.Fprintf(os.Stderr, "error while running: %v\n", err)
 	}
 }
