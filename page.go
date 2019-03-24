@@ -22,7 +22,7 @@ func (p *Page) toPath() string {
 }
 
 // Pages is a collection of non-post pages.
-type Pages []Page
+type Pages []*Page
 
 func (p Pages) context() []context {
 	ctx := make([]context, 0, len(p))
@@ -40,6 +40,16 @@ func (p Pages) convert(siteVars context) error {
 
 		if err := convertFile(src, page.toPath(), page.toURL(), siteVars); err != nil {
 			return err
+		}
+	}
+
+	return nil
+}
+
+func (p Pages) findIndex() *Page {
+	for _, page := range p {
+		if page.vars["url"] == "/index.md" || page.vars["url"] == "/index.html" {
+			return page
 		}
 	}
 

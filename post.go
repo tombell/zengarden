@@ -90,7 +90,7 @@ func (p *Post) toPath() string {
 }
 
 // Posts is a collection of posts.
-type Posts []Post
+type Posts []*Post
 
 func (p Posts) context() []context {
 	ctx := make([]context, 0, len(p))

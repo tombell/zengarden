@@ -14,6 +14,7 @@ type Config struct {
 	Target    string
 	BaseURL   string
 	Permalink string
+	Paginate  int
 	Excludes  []string
 }
 
@@ -28,6 +29,7 @@ func Run(cfg *Config) error {
 		baseURL:   cfg.BaseURL,
 		permalink: cfg.Permalink,
 		excludes:  cfg.Excludes,
+		paginate:  cfg.Paginate,
 
 		vars: context{
 			"site": context{},

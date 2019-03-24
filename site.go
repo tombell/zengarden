@@ -14,10 +14,9 @@ type Site struct {
 	target    string
 	baseURL   string
 	permalink string
-
-	excludes []string
-
-	vars context
+	paginate  int
+	excludes  []string
+	vars      context
 }
 
 func (s *Site) build() error {
@@ -45,7 +44,7 @@ func (s *Site) build() error {
 			}
 
 			if dot != '.' && dot != '_' {
-				p := Page{site: s, vars: context{}}
+				p := &Page{site: s, vars: context{}}
 				p.vars["path"] = from
 				p.vars["url"] = p.toURL()
 				p.vars["date"] = info.ModTime()
@@ -79,10 +78,7 @@ func (s *Site) build() error {
 			return err
 		}
 
-		p := Post{
-			site: s,
-			vars: context{},
-		}
+		p := &Post{s, context{}}
 
 		content, err := parseFile(from, p.vars)
 		if err != nil {
@@ -140,7 +136,13 @@ func (s *Site) build() error {
 	s.vars["site"].(context)["posts"] = posts.context()
 	s.vars["site"].(context)["categories"] = categories.context()
 
+	paginator := newPaginator(s, pages, posts)
+
 	if err := pages.convert(s.vars); err != nil {
+		return err
+	}
+
+	if err := paginator.generate(); err != nil {
 		return err
 	}
 

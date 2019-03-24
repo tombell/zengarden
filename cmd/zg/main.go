@@ -37,6 +37,7 @@ func main() {
 		Source:    ".",
 		Target:    "_site",
 		Permalink: "/post/:title/",
+		Paginate:  2,
 		Excludes:  []string{"README.md"},
 	}
 
