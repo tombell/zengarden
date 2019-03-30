@@ -114,6 +114,10 @@ func convertFile(src, dst, url string, siteVars context) error {
 				return err
 			}
 
+			if _, err := tmpl.ParseGlob(filepath.Join(includesDir, "*.html")); err != nil {
+				return err
+			}
+
 			var output bytes.Buffer
 			if err := tmpl.Execute(&output, vars); err != nil {
 				return err
@@ -138,7 +142,7 @@ func convertFile(src, dst, url string, siteVars context) error {
 			break
 		}
 
-		src = filepath.ToSlash(filepath.Join("_layouts", str(vars["layout"])+".html"))
+		src = filepath.ToSlash(filepath.Join(layoutsDir, str(vars["layout"])+".html"))
 		content = str(vars["content"])
 
 		vars["content"] = content

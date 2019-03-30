@@ -63,8 +63,8 @@ func (s *Site) build() error {
 	categories := Categories{}
 	posts := Posts{}
 
-	err = filepath.Walk("_posts", func(name string, info os.FileInfo, err error) error {
-		if info == nil || name == "_posts" {
+	err = filepath.Walk(postsDir, func(name string, info os.FileInfo, err error) error {
+		if info == nil || name == postsDir {
 			return err
 		}
 

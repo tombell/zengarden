@@ -8,6 +8,12 @@ import (
 	"time"
 )
 
+const (
+	includesDir = "_includes"
+	layoutsDir  = "_layouts"
+	postsDir    = "_posts"
+)
+
 // Config is the configuration data for building the site.
 type Config struct {
 	Source    string
