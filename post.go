@@ -15,7 +15,7 @@ type Post struct {
 
 func (p *Post) toURL() string {
 	if v, ok := p.vars["permalink"]; ok {
-		return filepath.ToSlash(filepath.Join(p.site.baseURL, str(v)))
+		return filepath.ToSlash(filepath.Join(p.site.cfg.BaseURL, str(v)))
 	}
 
 	from := p.vars["path"].(string)
@@ -35,23 +35,23 @@ func (p *Post) toURL() string {
 
 			title := name[11:]
 
-			url := p.site.permalink
+			url := p.site.cfg.Permalink
 			url = strings.Replace(url, ":title", title, -1)
 			url = strings.Replace(url, ":category", category, -1)
 			url = strings.Replace(url, ":year", fmt.Sprintf("%d", date.Year()), -1)
 			url = strings.Replace(url, ":month", fmt.Sprintf("%02d", date.Month()), -1)
 			url = strings.Replace(url, ":day", fmt.Sprintf("%02d", date.Day()), -1)
 
-			return joinURL(p.site.baseURL, url)
+			return joinURL(p.site.cfg.BaseURL, url)
 		}
 	}
 
-	return joinURL(p.site.baseURL, name+".html")
+	return joinURL(p.site.cfg.BaseURL, name+".html")
 }
 
 func (p *Post) toPath() string {
 	if v, ok := p.vars["permalink"]; ok {
-		return filepath.ToSlash(filepath.Join(p.site.target, str(v)))
+		return filepath.ToSlash(filepath.Join(p.site.cfg.Target, str(v)))
 	}
 
 	from := p.vars["path"].(string)
@@ -71,22 +71,22 @@ func (p *Post) toPath() string {
 
 			title := name[11:]
 
-			url := p.site.permalink
+			url := p.site.cfg.Permalink
 			url = strings.Replace(url, ":title", title, -1)
 			url = strings.Replace(url, ":category", category, -1)
 			url = strings.Replace(url, ":year", fmt.Sprintf("%d", date.Year()), -1)
 			url = strings.Replace(url, ":month", fmt.Sprintf("%02d", date.Month()), -1)
 			url = strings.Replace(url, ":day", fmt.Sprintf("%02d", date.Day()), -1)
 
-			if p.site.permalink[len(p.site.permalink)-1:len(p.site.permalink)] == "/" {
+			if p.site.cfg.Permalink[len(p.site.cfg.Permalink)-1:len(p.site.cfg.Permalink)] == "/" {
 				url += "/index"
 			}
 
-			return filepath.ToSlash(filepath.Clean(filepath.Join(p.site.target, url)))
+			return filepath.ToSlash(filepath.Clean(filepath.Join(p.site.cfg.Target, url)))
 		}
 	}
 
-	return filepath.ToSlash(filepath.Join(p.site.target, name))
+	return filepath.ToSlash(filepath.Join(p.site.cfg.Target, name))
 }
 
 // Posts is a collection of posts.

@@ -9,33 +9,31 @@ import (
 // Paginator handles paginating the posts into the correct pagination size, and
 // generates the additional pagination pages.
 type Paginator struct {
-	site  *Site
-	pages Pages
-	posts Posts
-	vars  context
+	site *Site
+	vars context
 }
 
-func newPaginator(site *Site, pages Pages, posts Posts) *Paginator {
-	p := &Paginator{site, pages, posts, context{}}
+func newPaginator(site *Site) *Paginator {
+	p := &Paginator{site, context{}}
 
 	p.site.vars["paginator"] = context{}
 
-	if p.site.paginate > 0 {
-		npages := int(math.Floor(float64(len(posts)) / float64(p.site.paginate)))
+	if p.site.cfg.Paginate > 0 {
+		npages := int(math.Floor(float64(len(p.site.posts)) / float64(p.site.cfg.Paginate)))
 
-		p.vars["per_page"] = p.site.paginate
-		p.vars["total_posts"] = len(p.posts)
+		p.vars["per_page"] = p.site.cfg.Paginate
+		p.vars["total_posts"] = len(p.site.posts)
 		p.vars["total_pages"] = npages
 		p.vars["page"] = 1
 
-		nni := p.site.paginate
-		if nni > len(p.posts) {
-			nni = len(p.posts)
+		nni := p.site.cfg.Paginate
+		if nni > len(p.site.posts) {
+			nni = len(p.site.posts)
 		}
 
-		p.vars["posts"] = p.posts.context()[:nni]
+		p.vars["posts"] = p.site.posts.context()[:nni]
 
-		if len(posts) > p.site.paginate {
+		if len(p.site.posts) > p.site.cfg.Paginate {
 			p.vars["previous_page"] = false
 			p.vars["previous_page_path"] = nil
 
@@ -54,11 +52,11 @@ func (p *Paginator) context() context {
 }
 
 func (p *Paginator) generate() error {
-	if p.site.paginate <= 0 {
+	if p.site.cfg.Paginate <= 0 {
 		return nil
 	}
 
-	index := p.pages.findIndex()
+	index := p.site.pages.findIndex()
 
 	if index == nil {
 		return nil
@@ -93,17 +91,17 @@ func (p *Paginator) generate() error {
 
 		p.vars["page"] = i
 
-		nni := p.site.paginate * i
-		if nni > len(p.posts) {
-			nni = len(p.posts)
+		nni := p.site.cfg.Paginate * i
+		if nni > len(p.site.posts) {
+			nni = len(p.site.posts)
 		}
 
-		p.vars["posts"] = p.posts.context()[p.site.paginate*(i-1) : nni]
+		p.vars["posts"] = p.site.posts.context()[p.site.cfg.Paginate*(i-1) : nni]
 
 		p.site.vars["paginator"] = p.vars
 
-		to := filepath.ToSlash(filepath.Join(p.site.target, fmt.Sprintf("page%d", i), "index.html"))
-		url := joinURL(p.site.baseURL, filepath.ToSlash(from[len(p.site.source):]))
+		to := filepath.ToSlash(filepath.Join(p.site.cfg.Target, fmt.Sprintf("page%d", i), "index.html"))
+		url := joinURL(p.site.cfg.BaseURL, filepath.ToSlash(from[len(p.site.cfg.Source):]))
 
 		if err := convertFile(from, to, url, p.site.vars); err != nil {
 			return err

@@ -13,12 +13,12 @@ type Page struct {
 
 func (p *Page) toURL() string {
 	from := p.vars["path"].(string)
-	return joinURL(p.site.baseURL, filepath.ToSlash(from[len(p.site.source):]))
+	return joinURL(p.site.cfg.BaseURL, filepath.ToSlash(from[len(p.site.cfg.Source):]))
 }
 
 func (p *Page) toPath() string {
 	from := p.vars["path"].(string)
-	return filepath.ToSlash(filepath.Join(p.site.target, from[len(p.site.source):]))
+	return filepath.ToSlash(filepath.Join(p.site.cfg.Target, from[len(p.site.cfg.Source):]))
 }
 
 // Pages is a collection of non-post pages.

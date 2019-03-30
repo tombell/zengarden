@@ -10,22 +10,18 @@ import (
 
 // Site is the site being built.
 type Site struct {
-	source    string
-	target    string
-	baseURL   string
-	permalink string
-	paginate  int
-	excludes  []string
-	vars      context
+	cfg        *Config
+	vars       context
+	pages      Pages
+	posts      Posts
+	categories Categories
 }
 
 func (s *Site) build() error {
 	var err error
 
-	pages := Pages{}
-
-	err = filepath.Walk(s.source, func(name string, info os.FileInfo, err error) error {
-		if info == nil || name == s.source {
+	err = filepath.Walk(s.cfg.Source, func(name string, info os.FileInfo, err error) error {
+		if info == nil || name == s.cfg.Source {
 			return err
 		}
 
@@ -33,11 +29,11 @@ func (s *Site) build() error {
 		dot := filepath.Base(name)[0]
 
 		if info.IsDir() {
-			if from == s.target || dot == '.' || dot == '_' {
+			if from == s.cfg.Target || dot == '.' || dot == '_' {
 				return filepath.SkipDir
 			}
 		} else {
-			for _, exclude := range s.excludes {
+			for _, exclude := range s.cfg.Excludes {
 				if strings.HasSuffix(from, exclude) {
 					return err
 				}
@@ -49,7 +45,7 @@ func (s *Site) build() error {
 				p.vars["url"] = p.toURL()
 				p.vars["date"] = info.ModTime()
 
-				pages = append(pages, p)
+				s.pages = append(s.pages, p)
 			}
 		}
 
@@ -59,9 +55,6 @@ func (s *Site) build() error {
 	if err != nil {
 		return err
 	}
-
-	categories := Categories{}
-	posts := Posts{}
 
 	err = filepath.Walk(postsDir, func(name string, info os.FileInfo, err error) error {
 		if info == nil || name == postsDir {
@@ -96,17 +89,17 @@ func (s *Site) build() error {
 
 		if category, ok := p.vars["category"]; ok {
 			cname := str(category)
-			categorizedPosts := categories[cname]
+			categorizedPosts := s.categories[cname]
 
 			if categorizedPosts == nil {
 				categorizedPosts = Posts{}
 			}
 
 			categorizedPosts = append(categorizedPosts, p)
-			categories[cname] = categorizedPosts
+			s.categories[cname] = categorizedPosts
 		}
 
-		posts = append(posts, p)
+		s.posts = append(s.posts, p)
 
 		return err
 	})
@@ -115,30 +108,34 @@ func (s *Site) build() error {
 		return err
 	}
 
-	if _, err := os.Stat(s.target); err != nil {
-		if err := os.MkdirAll(s.target, 0755); err != nil {
+	if _, err := os.Stat(s.cfg.Target); err != nil {
+		if err := os.MkdirAll(s.cfg.Target, 0755); err != nil {
 			return err
 		}
 	}
 
-	sort.Sort(sort.Reverse(pages))
-	sort.Sort(sort.Reverse(posts))
+	sort.Sort(sort.Reverse(s.pages))
+	sort.Sort(sort.Reverse(s.posts))
 
-	for _, category := range categories {
+	for _, category := range s.categories {
 		sort.Sort(sort.Reverse(category))
 	}
 
-	s.vars["site"].(context)["url"] = s.baseURL
-	s.vars["site"].(context)["baseurl"] = s.baseURL
+	s.vars["site"].(context)["url"] = s.cfg.BaseURL
+	s.vars["site"].(context)["baseurl"] = s.cfg.BaseURL
 	s.vars["site"].(context)["time"] = time.Now()
 
-	s.vars["site"].(context)["pages"] = pages.context()
-	s.vars["site"].(context)["posts"] = posts.context()
-	s.vars["site"].(context)["categories"] = categories.context()
+	s.vars["site"].(context)["pages"] = s.pages.context()
+	s.vars["site"].(context)["posts"] = s.posts.context()
+	s.vars["site"].(context)["categories"] = s.categories.context()
 
-	paginator := newPaginator(s, pages, posts)
+	for k, v := range s.cfg.Vars {
+		s.vars["site"].(context)[k] = v
+	}
 
-	if err := pages.convert(s.vars); err != nil {
+	paginator := newPaginator(s)
+
+	if err := s.pages.convert(s.vars); err != nil {
 		return err
 	}
 
@@ -146,7 +143,7 @@ func (s *Site) build() error {
 		return err
 	}
 
-	if err := posts.convert(s.vars); err != nil {
+	if err := s.posts.convert(s.vars); err != nil {
 		return err
 	}
 

@@ -33,15 +33,16 @@ func main() {
 		os.Exit(0)
 	}
 
-	cfg := &zengarden.Config{
-		Source:    ".",
-		Target:    "_site",
-		Permalink: "/post/:title/",
-		Paginate:  2,
-		Excludes:  []string{"README.md"},
+	// TODO: allow flag to override config file?
+
+	cfg, err := zengarden.LoadConfig(zengarden.DefaultConfigPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error while reading config: %v\n", err)
 	}
 
+	fmt.Printf("%+v\n", cfg)
+
 	if err := zengarden.Run(cfg); err != nil {
-		fmt.Fprintf(os.Stderr, "error while running: %v\n", err)
+		fmt.Fprintf(os.Stderr, "error while building: %v\n", err)
 	}
 }

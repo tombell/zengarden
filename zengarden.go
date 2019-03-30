@@ -14,32 +14,11 @@ const (
 	postsDir    = "_posts"
 )
 
-// Config is the configuration data for building the site.
-type Config struct {
-	Source    string
-	Target    string
-	BaseURL   string
-	Permalink string
-	Paginate  int
-	Excludes  []string
-}
-
 // Run will build the site using the given configuration.
 func Run(cfg *Config) error {
-	source, _ := filepath.Abs(cfg.Source)
-	target, _ := filepath.Abs(cfg.Target)
-
 	s := Site{
-		source:    filepath.ToSlash(source),
-		target:    filepath.ToSlash(target),
-		baseURL:   cfg.BaseURL,
-		permalink: cfg.Permalink,
-		excludes:  cfg.Excludes,
-		paginate:  cfg.Paginate,
-
-		vars: context{
-			"site": context{},
-		},
+		cfg:  cfg,
+		vars: context{"site": context{}},
 	}
 
 	return s.build()
