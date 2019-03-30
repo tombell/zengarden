@@ -109,7 +109,7 @@ func convertFile(src, dst, url string, siteVars context) error {
 		}
 
 		if content != "" {
-			tmpl, err := template.New("tmpl").Parse(content)
+			tmpl, err := template.New(src).Parse(content)
 			if err != nil {
 				return err
 			}
