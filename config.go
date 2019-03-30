@@ -21,7 +21,7 @@ type Config struct {
 	Paginate  int
 	Excludes  []string
 
-	Vars context
+	Vars Context
 }
 
 // LoadConfig loads the configuration file at the given path, and adds any
@@ -29,14 +29,14 @@ type Config struct {
 func LoadConfig(path string) (*Config, error) {
 	cfg := &Config{
 		Permalink: "/posts/:title",
-		Vars:      context{},
+		Vars:      Context{},
 	}
 
 	cfg.Source, _ = filepath.Abs(".")
 	cfg.Target, _ = filepath.Abs("_site")
 
 	if _, err := os.Stat(path); err == nil {
-		vars := context{}
+		vars := Context{}
 
 		if _, err := toml.DecodeFile(path, &vars); err != nil {
 			return nil, err

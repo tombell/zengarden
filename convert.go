@@ -26,7 +26,7 @@ func isConvertable(src string) bool {
 	return false
 }
 
-func parseFile(file string, vars context) (string, error) {
+func parseFile(file string, vars Context) (string, error) {
 	buf, err := ioutil.ReadFile(file)
 	if err != nil {
 		return "", err
@@ -60,7 +60,7 @@ func parseFile(file string, vars context) (string, error) {
 	return content, nil
 }
 
-func convertFile(src, dst, url string, siteVars context) error {
+func convertFile(src, dst, url string, siteVars Context) error {
 	dir := filepath.Dir(dst)
 
 	if _, err := os.Stat(dir); err != nil {
@@ -90,14 +90,14 @@ func convertFile(src, dst, url string, siteVars context) error {
 		dst = dst[0:len(dst)-len(filepath.Ext(dst))] + ".html"
 	}
 
-	vars := context{"content": ""}
+	vars := Context{"content": ""}
 
 	for {
 		for k, v := range siteVars {
 			vars[k] = v
 		}
 
-		pageVars := context{}
+		pageVars := Context{}
 
 		content, err := parseFile(src, pageVars)
 		if err != nil {
@@ -126,7 +126,7 @@ func convertFile(src, dst, url string, siteVars context) error {
 			content = output.String()
 		}
 
-		vars["page"] = context{
+		vars["page"] = Context{
 			"date":  toDate(src, vars),
 			"url":   url,
 			"title": str(vars["title"]),
@@ -146,7 +146,7 @@ func convertFile(src, dst, url string, siteVars context) error {
 		content = str(vars["content"])
 
 		vars["content"] = content
-		vars["page"].(context)["content"] = content
+		vars["page"].(Context)["content"] = content
 		vars["layout"] = ""
 	}
 

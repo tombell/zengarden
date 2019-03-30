@@ -11,7 +11,7 @@ import (
 // Site is the site being built.
 type Site struct {
 	cfg        *Config
-	vars       context
+	vars       Context
 	pages      Pages
 	posts      Posts
 	categories Categories
@@ -40,7 +40,7 @@ func (s *Site) build() error {
 			}
 
 			if dot != '.' && dot != '_' {
-				p := &Page{site: s, vars: context{}}
+				p := &Page{site: s, vars: Context{}}
 				p.vars["path"] = from
 				p.vars["url"] = p.toURL()
 				p.vars["date"] = info.ModTime()
@@ -71,7 +71,7 @@ func (s *Site) build() error {
 			return err
 		}
 
-		p := &Post{s, context{}}
+		p := &Post{s, Context{}}
 
 		content, err := parseFile(from, p.vars)
 		if err != nil {
@@ -121,16 +121,16 @@ func (s *Site) build() error {
 		sort.Sort(sort.Reverse(category))
 	}
 
-	s.vars["site"].(context)["url"] = s.cfg.BaseURL
-	s.vars["site"].(context)["baseurl"] = s.cfg.BaseURL
-	s.vars["site"].(context)["time"] = time.Now()
+	s.vars["site"].(Context)["url"] = s.cfg.BaseURL
+	s.vars["site"].(Context)["baseurl"] = s.cfg.BaseURL
+	s.vars["site"].(Context)["time"] = time.Now()
 
-	s.vars["site"].(context)["pages"] = s.pages.context()
-	s.vars["site"].(context)["posts"] = s.posts.context()
-	s.vars["site"].(context)["categories"] = s.categories.context()
+	s.vars["site"].(Context)["pages"] = s.pages.context()
+	s.vars["site"].(Context)["posts"] = s.posts.context()
+	s.vars["site"].(Context)["categories"] = s.categories.context()
 
 	for k, v := range s.cfg.Vars {
-		s.vars["site"].(context)[k] = v
+		s.vars["site"].(Context)[k] = v
 	}
 
 	paginator := newPaginator(s)

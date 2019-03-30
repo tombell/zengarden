@@ -10,7 +10,7 @@ import (
 // Post is a single post from the _posts directory.
 type Post struct {
 	site *Site
-	vars context
+	vars Context
 }
 
 func (p *Post) toURL() string {
@@ -92,8 +92,8 @@ func (p *Post) toPath() string {
 // Posts is a collection of posts.
 type Posts []*Post
 
-func (p Posts) context() []context {
-	ctx := make([]context, 0, len(p))
+func (p Posts) context() []Context {
+	ctx := make([]Context, 0, len(p))
 
 	for _, post := range p {
 		ctx = append(ctx, post.vars)
@@ -102,7 +102,7 @@ func (p Posts) context() []context {
 	return ctx
 }
 
-func (p Posts) convert(siteVars context) error {
+func (p Posts) convert(siteVars Context) error {
 	for _, post := range p {
 		src := post.vars["path"].(string)
 
@@ -129,11 +129,11 @@ func (p Posts) Less(i, j int) bool {
 // Categories is a map of category names to the posts of that category.
 type Categories map[string]Posts
 
-func (c Categories) context() map[string][]context {
-	ctx := map[string][]context{}
+func (c Categories) context() map[string][]Context {
+	ctx := map[string][]Context{}
 
 	for category, posts := range c {
-		ctxCategory := make([]context, 0, len(posts))
+		ctxCategory := make([]Context, 0, len(posts))
 
 		for _, p := range posts {
 			ctxCategory = append(ctxCategory, p.vars)

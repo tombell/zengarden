@@ -18,7 +18,7 @@ const (
 func Run(cfg *Config) error {
 	s := Site{
 		cfg:  cfg,
-		vars: context{"site": context{}},
+		vars: Context{"site": Context{}},
 	}
 
 	return s.build()
@@ -40,7 +40,7 @@ func joinURL(l, r string) string {
 	return l + r
 }
 
-func toDate(from string, vars context) time.Time {
+func toDate(from string, vars Context) time.Time {
 	if v, ok := vars["date"]; ok {
 		date, err := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", str(v))
 		if err == nil {

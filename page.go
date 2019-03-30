@@ -8,7 +8,7 @@ import (
 // Page is a single non-post page not in the _posts directory.
 type Page struct {
 	site *Site
-	vars context
+	vars Context
 }
 
 func (p *Page) toURL() string {
@@ -24,8 +24,8 @@ func (p *Page) toPath() string {
 // Pages is a collection of non-post pages.
 type Pages []*Page
 
-func (p Pages) context() []context {
-	ctx := make([]context, 0, len(p))
+func (p Pages) context() []Context {
+	ctx := make([]Context, 0, len(p))
 
 	for _, page := range p {
 		ctx = append(ctx, page.vars)
@@ -34,7 +34,7 @@ func (p Pages) context() []context {
 	return ctx
 }
 
-func (p Pages) convert(siteVars context) error {
+func (p Pages) convert(siteVars Context) error {
 	for _, page := range p {
 		src := page.vars["path"].(string)
 

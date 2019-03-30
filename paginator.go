@@ -10,13 +10,13 @@ import (
 // generates the additional pagination pages.
 type Paginator struct {
 	site *Site
-	vars context
+	vars Context
 }
 
 func newPaginator(site *Site) *Paginator {
-	p := &Paginator{site, context{}}
+	p := &Paginator{site, Context{}}
 
-	p.site.vars["paginator"] = context{}
+	p.site.vars["paginator"] = Context{}
 
 	if p.site.cfg.Paginate > 0 {
 		npages := int(math.Floor(float64(len(p.site.posts)) / float64(p.site.cfg.Paginate)))
@@ -47,7 +47,7 @@ func newPaginator(site *Site) *Paginator {
 	return p
 }
 
-func (p *Paginator) context() context {
+func (p *Paginator) context() Context {
 	return p.vars
 }
 
