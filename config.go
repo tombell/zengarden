@@ -19,6 +19,7 @@ type Config struct {
 	BaseURL   string
 	Permalink string
 	Paginate  int
+	Style     string
 	Excludes  []string
 
 	Vars Context
@@ -29,6 +30,7 @@ type Config struct {
 func LoadConfig(path string) (*Config, error) {
 	cfg := &Config{
 		Permalink: "/posts/:title",
+		Style:     "fallback",
 		Vars:      Context{},
 	}
 
@@ -65,6 +67,11 @@ func LoadConfig(path string) (*Config, error) {
 		if paginate, ok := vars["paginate"].(int64); ok {
 			cfg.Paginate = int(paginate)
 			delete(vars, "paginate")
+		}
+
+		if style, ok := vars["syntax_highlight"].(string); ok {
+			cfg.Style = style
+			delete(vars, "syntax_highlight")
 		}
 
 		if excludes, ok := vars["excludes"].([]interface{}); ok {

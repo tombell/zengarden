@@ -4,6 +4,7 @@ import (
 	"io"
 	"path/filepath"
 
+	"github.com/alecthomas/chroma"
 	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
@@ -19,12 +20,13 @@ func isMarkdown(src string) bool {
 	return false
 }
 
-func renderMarkdown(content string) string {
+func renderMarkdown(content, style string) string {
 	r := &Renderer{
 		base: blackfriday.NewHTMLRenderer(blackfriday.HTMLRendererParameters{
 			Flags: blackfriday.CommonHTMLFlags,
 		}),
-		formatter: html.New(html.WithClasses()),
+		formatter: html.New(),
+		style:     styles.Get(style),
 	}
 
 	renderer := blackfriday.WithRenderer(r)
@@ -38,6 +40,7 @@ func renderMarkdown(content string) string {
 type Renderer struct {
 	base      *blackfriday.HTMLRenderer
 	formatter *html.Formatter
+	style     *chroma.Style
 }
 
 // RenderWithChroma renders the given text to the w io.Writer
@@ -55,9 +58,7 @@ func (r *Renderer) RenderWithChroma(w io.Writer, text []byte, data blackfriday.C
 		return err
 	}
 
-	// TODO: pick style from config?
-
-	return r.formatter.Format(w, styles.Fallback, iterator)
+	return r.formatter.Format(w, r.style, iterator)
 }
 
 // RenderNode satisfies the Renderer interface

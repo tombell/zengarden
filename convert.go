@@ -133,7 +133,7 @@ func convertFile(src, dst, url string, site *Site) error {
 		}
 
 		if isMarkdown(src) {
-			vars["content"] = renderMarkdown(content)
+			vars["content"] = renderMarkdown(content, site.cfg.Style)
 		} else {
 			vars["content"] = content
 		}
