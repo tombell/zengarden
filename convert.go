@@ -60,7 +60,7 @@ func parseFile(file string, vars Context) (string, error) {
 	return content, nil
 }
 
-func convertFile(src, dst, url string, siteVars Context) error {
+func convertFile(src, dst, url string, site *Site) error {
 	dir := filepath.Dir(dst)
 
 	if _, err := os.Stat(dir); err != nil {
@@ -93,7 +93,7 @@ func convertFile(src, dst, url string, siteVars Context) error {
 	vars := Context{"content": ""}
 
 	for {
-		for k, v := range siteVars {
+		for k, v := range site.vars {
 			vars[k] = v
 		}
 

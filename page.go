@@ -38,7 +38,7 @@ func (p Pages) convert(siteVars Context) error {
 	for _, page := range p {
 		src := page.vars["path"].(string)
 
-		if err := convertFile(src, page.toPath(), page.toURL(), siteVars); err != nil {
+		if err := convertFile(src, page.toPath(), page.toURL(), page.site); err != nil {
 			return err
 		}
 	}

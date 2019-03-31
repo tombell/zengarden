@@ -106,7 +106,7 @@ func (p Posts) convert(siteVars Context) error {
 	for _, post := range p {
 		src := post.vars["path"].(string)
 
-		if err := convertFile(src, post.toPath(), post.toURL(), siteVars); err != nil {
+		if err := convertFile(src, post.toPath(), post.toURL(), post.site); err != nil {
 			return err
 		}
 	}
