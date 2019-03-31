@@ -26,7 +26,8 @@ func renderMarkdown(content, style string) string {
 			Flags: blackfriday.CommonHTMLFlags,
 		}),
 		formatter: html.New(),
-		style:     styles.Get(style),
+		// formatter: html.New(html.WithClasses()),
+		style: styles.Get(style),
 	}
 
 	renderer := blackfriday.WithRenderer(r)
