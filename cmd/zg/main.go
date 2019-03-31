@@ -40,8 +40,6 @@ func main() {
 		fmt.Fprintf(os.Stderr, "error while reading config: %v\n", err)
 	}
 
-	fmt.Printf("%+v\n", cfg)
-
 	if err := zengarden.Run(cfg); err != nil {
 		fmt.Fprintf(os.Stderr, "error while building: %v\n", err)
 	}
