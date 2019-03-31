@@ -9,9 +9,36 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/BurntSushi/toml"
 )
+
+var funcMap = template.FuncMap{
+	"dateToString": dateToString,
+	"filter":       filter,
+	"slice":        slice,
+}
+
+func dateToString(date time.Time) string {
+	return date.Format("2 Jan 2006")
+}
+
+func filter(data []Context, key string, val interface{}) []Context {
+	var result []Context
+
+	for _, ctx := range data {
+		if ctx[key] == val {
+			result = append(result, ctx)
+		}
+	}
+
+	return nil
+}
+
+func slice(data []Context, offset, count int) []Context {
+	return data[offset:count]
+}
 
 func isConvertable(src string) bool {
 	if isMarkdown(src) {
@@ -109,7 +136,7 @@ func convertFile(src, dst, url string, site *Site) error {
 		}
 
 		if content != "" {
-			tmpl, err := template.New(src).Parse(content)
+			tmpl, err := template.New(src).Funcs(funcMap).Parse(content)
 			if err != nil {
 				return err
 			}
