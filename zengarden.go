@@ -17,8 +17,11 @@ const (
 // Run will build the site using the given configuration.
 func Run(cfg *Config) error {
 	s := Site{
-		cfg:  cfg,
-		vars: Context{},
+		cfg:        cfg,
+		vars:       Context{},
+		pages:      Pages{},
+		posts:      Posts{},
+		categories: Categories{},
 	}
 
 	return s.build()
