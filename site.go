@@ -10,7 +10,8 @@ import (
 
 // Site is the site being built.
 type Site struct {
-	cfg        *Config
+	cfg *Config
+
 	vars       Context
 	pages      Pages
 	posts      Posts
@@ -120,6 +121,8 @@ func (s *Site) build() error {
 	for _, category := range s.categories {
 		sort.Sort(sort.Reverse(category))
 	}
+
+	s.vars["site"] = Context{}
 
 	s.vars["site"].(Context)["baseurl"] = s.cfg.BaseURL
 	s.vars["site"].(Context)["time"] = time.Now()

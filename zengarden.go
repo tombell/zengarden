@@ -18,7 +18,7 @@ const (
 func Run(cfg *Config) error {
 	s := Site{
 		cfg:  cfg,
-		vars: Context{"site": Context{}},
+		vars: Context{},
 	}
 
 	return s.build()
