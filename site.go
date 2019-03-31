@@ -121,7 +121,6 @@ func (s *Site) build() error {
 		sort.Sort(sort.Reverse(category))
 	}
 
-	s.vars["site"].(Context)["url"] = s.cfg.BaseURL
 	s.vars["site"].(Context)["baseurl"] = s.cfg.BaseURL
 	s.vars["site"].(Context)["time"] = time.Now()
 
