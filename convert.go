@@ -104,6 +104,24 @@ func parseFile(file string, vars Context) (string, error) {
 	return content, nil
 }
 
+func renderTemplate(src, content string, vars Context) (string, error) {
+	tmpl, err := template.New(src).Funcs(funcMap).Parse(content)
+	if err != nil {
+		return "", err
+	}
+
+	if _, err := tmpl.ParseGlob(filepath.Join(includesDir, "*.html")); err != nil {
+		return "", err
+	}
+
+	var output bytes.Buffer
+	if err := tmpl.Execute(&output, vars); err != nil {
+		return "", err
+	}
+
+	return output.String(), nil
+}
+
 func convertFile(src, dst, url string, site *Site) error {
 	dir := filepath.Dir(dst)
 
@@ -140,21 +158,12 @@ func convertFile(src, dst, url string, site *Site) error {
 		}
 
 		if content != "" {
-			tmpl, err := template.New(src).Funcs(funcMap).Parse(content)
+			output, err := renderTemplate(src, content, vars)
 			if err != nil {
 				return err
 			}
 
-			if _, err := tmpl.ParseGlob(filepath.Join(includesDir, "*.html")); err != nil {
-				return err
-			}
-
-			var output bytes.Buffer
-			if err := tmpl.Execute(&output, vars); err != nil {
-				return err
-			}
-
-			content = output.String()
+			content = output
 		}
 
 		vars["page"] = Context{
