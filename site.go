@@ -19,9 +19,55 @@ type Site struct {
 }
 
 func (s *Site) build() error {
-	var err error
+	if err := s.buildPages(); err != nil {
+		return err
+	}
 
-	err = filepath.Walk(s.cfg.Source, func(name string, info os.FileInfo, err error) error {
+	if err := s.buildPosts(); err != nil {
+		return err
+	}
+
+	if _, err := os.Stat(s.cfg.Target); err != nil {
+		if err := os.MkdirAll(s.cfg.Target, 0755); err != nil {
+			return err
+		}
+	}
+
+	sort.Sort(sort.Reverse(s.pages))
+	sort.Sort(sort.Reverse(s.posts))
+
+	for _, category := range s.categories {
+		sort.Sort(sort.Reverse(category))
+	}
+
+	s.vars["site"] = Context{}
+
+	s.vars["site"].(Context)["baseurl"] = s.cfg.BaseURL
+	s.vars["site"].(Context)["time"] = time.Now()
+
+	s.vars["site"].(Context)["pages"] = s.pages.context()
+	s.vars["site"].(Context)["posts"] = s.posts.context()
+	s.vars["site"].(Context)["categories"] = s.categories.context()
+
+	for k, v := range s.cfg.Vars {
+		s.vars["site"].(Context)[k] = v
+	}
+
+	paginator := newPaginator(s)
+
+	if err := s.pages.convert(s.vars); err != nil {
+		return err
+	}
+
+	if err := paginator.generate(); err != nil {
+		return err
+	}
+
+	return s.posts.convert(s.vars)
+}
+
+func (s *Site) buildPages() error {
+	err := filepath.Walk(s.cfg.Source, func(name string, info os.FileInfo, err error) error {
 		if info == nil || name == s.cfg.Source {
 			return err
 		}
@@ -53,11 +99,11 @@ func (s *Site) build() error {
 		return err
 	})
 
-	if err != nil {
-		return err
-	}
+	return err
+}
 
-	err = filepath.Walk(postsDir, func(name string, info os.FileInfo, err error) error {
+func (s *Site) buildPosts() error {
+	err := filepath.Walk(postsDir, func(name string, info os.FileInfo, err error) error {
 		if info == nil || name == postsDir {
 			return err
 		}
@@ -105,45 +151,5 @@ func (s *Site) build() error {
 		return err
 	})
 
-	if err != nil {
-		return err
-	}
-
-	if _, err := os.Stat(s.cfg.Target); err != nil {
-		if err := os.MkdirAll(s.cfg.Target, 0755); err != nil {
-			return err
-		}
-	}
-
-	sort.Sort(sort.Reverse(s.pages))
-	sort.Sort(sort.Reverse(s.posts))
-
-	for _, category := range s.categories {
-		sort.Sort(sort.Reverse(category))
-	}
-
-	s.vars["site"] = Context{}
-
-	s.vars["site"].(Context)["baseurl"] = s.cfg.BaseURL
-	s.vars["site"].(Context)["time"] = time.Now()
-
-	s.vars["site"].(Context)["pages"] = s.pages.context()
-	s.vars["site"].(Context)["posts"] = s.posts.context()
-	s.vars["site"].(Context)["categories"] = s.categories.context()
-
-	for k, v := range s.cfg.Vars {
-		s.vars["site"].(Context)[k] = v
-	}
-
-	paginator := newPaginator(s)
-
-	if err := s.pages.convert(s.vars); err != nil {
-		return err
-	}
-
-	if err := paginator.generate(); err != nil {
-		return err
-	}
-
-	return s.posts.convert(s.vars)
+	return err
 }
