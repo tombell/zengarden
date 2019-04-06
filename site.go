@@ -145,9 +145,5 @@ func (s *Site) build() error {
 		return err
 	}
 
-	if err := s.posts.convert(s.vars); err != nil {
-		return err
-	}
-
-	return nil
+	return s.posts.convert(s.vars)
 }
