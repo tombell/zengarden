@@ -53,6 +53,23 @@ func isConvertable(src string) bool {
 	return false
 }
 
+func copyFile(src, dst string) error {
+	sf, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer sf.Close()
+
+	df, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer df.Close()
+
+	_, err = io.Copy(df, sf)
+	return err
+}
+
 func parseFile(file string, vars Context) (string, error) {
 	buf, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -97,20 +114,7 @@ func convertFile(src, dst, url string, site *Site) error {
 	}
 
 	if !isConvertable(src) {
-		sf, err := os.Open(src)
-		if err != nil {
-			return err
-		}
-		defer sf.Close()
-
-		df, err := os.Create(dst)
-		if err != nil {
-			return err
-		}
-		defer df.Close()
-
-		_, err = io.Copy(df, sf)
-		return err
+		return copyFile(src, dst)
 	}
 
 	if isMarkdown(src) {
