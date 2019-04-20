@@ -103,7 +103,7 @@ func (p *Paginator) generate() error {
 		to := filepath.ToSlash(filepath.Join(p.site.cfg.Target, fmt.Sprintf("page%d", i), "index.html"))
 		url := joinURL(p.site.cfg.BaseURL, filepath.ToSlash(from[len(p.site.cfg.Source):]))
 
-		if err := convertFile(from, to, url, p.site); err != nil {
+		if err := convertFile(from, to, url, p.site, nil); err != nil {
 			return err
 		}
 	}

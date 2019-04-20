@@ -122,7 +122,7 @@ func renderTemplate(src, content string, vars Context) (string, error) {
 	return output.String(), nil
 }
 
-func convertFile(src, dst, url string, site *Site) error {
+func convertFile(src, dst, url string, site *Site, postVars Context) error {
 	dir := filepath.Dir(dst)
 
 	if _, err := os.Stat(dir); err != nil {
@@ -167,9 +167,11 @@ func convertFile(src, dst, url string, site *Site) error {
 		}
 
 		vars["page"] = Context{
-			"date":  toDate(src, vars),
-			"url":   url,
-			"title": str(vars["title"]),
+			"date":     toDate(src, vars),
+			"url":      url,
+			"title":    str(vars["title"]),
+			"next":     postVars["next"],
+			"previous": postVars["previous"],
 		}
 
 		if isMarkdown(src) {

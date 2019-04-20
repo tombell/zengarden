@@ -103,10 +103,18 @@ func (p Posts) context() []Context {
 }
 
 func (p Posts) convert(siteVars Context) error {
-	for _, post := range p {
+	for idx, post := range p {
+		if idx < len(p)-1 {
+			post.vars["previous"] = p[idx+1].vars
+		}
+
+		if idx > 0 {
+			post.vars["next"] = p[idx-1].vars
+		}
+
 		src := post.vars["path"].(string)
 
-		if err := convertFile(src, post.toPath(), post.toURL(), post.site); err != nil {
+		if err := convertFile(src, post.toPath(), post.toURL(), post.site, post.vars); err != nil {
 			return err
 		}
 	}
