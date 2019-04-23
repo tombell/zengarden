@@ -105,13 +105,21 @@ func (p Posts) context() []Context {
 func (p Posts) convert(siteVars Context) error {
 	for idx, post := range p {
 		if idx < len(p)-1 {
-			// TODO: set properties, to improve perf
-			post.vars["previous"] = p[idx+1].vars
+			previous := p[idx+1].vars
+
+			post.vars["previous"] = Context{}
+			post.vars["previous"].(Context)["date"] = previous["date"]
+			post.vars["previous"].(Context)["url"] = previous["title"]
+			post.vars["previous"].(Context)["title"] = previous["title"]
 		}
 
 		if idx > 0 {
-			// TODO: set properties, to improve perf
-			post.vars["next"] = p[idx-1].vars
+			next := p[idx-1].vars
+
+			post.vars["next"] = Context{}
+			post.vars["next"].(Context)["date"] = next["date"]
+			post.vars["next"].(Context)["url"] = next["title"]
+			post.vars["next"].(Context)["title"] = next["title"]
 		}
 
 		src := post.vars["path"].(string)
