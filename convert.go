@@ -29,7 +29,7 @@ func dateToString(date time.Time) string {
 	return date.Format("2 Jan 2006")
 }
 
-func filter(data []Context, key string, val interface{}) []Context {
+func filter(key string, val interface{}, data []Context) []Context {
 	var result []Context
 
 	for _, ctx := range data {
@@ -41,7 +41,7 @@ func filter(data []Context, key string, val interface{}) []Context {
 	return nil
 }
 
-func slice(data []Context, offset, count int) []Context {
+func slice(offset, count int, data []Context) []Context {
 	return data[offset:count]
 }
 
