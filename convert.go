@@ -15,9 +15,14 @@ import (
 )
 
 var funcMap = template.FuncMap{
+	"date":         date,
 	"dateToString": dateToString,
 	"filter":       filter,
 	"slice":        slice,
+}
+
+func date(format string, date time.Time) string {
+	return date.Format(format)
 }
 
 func dateToString(date time.Time) string {
