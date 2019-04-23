@@ -105,10 +105,12 @@ func (p Posts) context() []Context {
 func (p Posts) convert(siteVars Context) error {
 	for idx, post := range p {
 		if idx < len(p)-1 {
+			// TODO: set properties, to improve perf
 			post.vars["previous"] = p[idx+1].vars
 		}
 
 		if idx > 0 {
+			// TODO: set properties, to improve perf
 			post.vars["next"] = p[idx-1].vars
 		}
 
