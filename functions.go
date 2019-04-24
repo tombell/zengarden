@@ -1,11 +1,14 @@
 package zengarden
 
 import (
+	"strings"
 	"text/template"
 	"time"
 )
 
 var funcMap = template.FuncMap{
+	"downcase":     strings.ToLower,
+	"upcase":       strings.ToUpper,
 	"date":         date,
 	"dateToString": dateToString,
 	"filter":       filter,
