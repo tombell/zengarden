@@ -21,13 +21,18 @@ func isMarkdown(src string) bool {
 }
 
 func renderMarkdown(content, style string) string {
+	var s *chroma.Style
+
+	if style != "none" && style != "fallback" {
+		s = styles.Get(style)
+	}
+
 	r := &Renderer{
 		base: blackfriday.NewHTMLRenderer(blackfriday.HTMLRendererParameters{
 			Flags: blackfriday.CommonHTMLFlags,
 		}),
 		formatter: html.New(),
-		// formatter: html.New(html.WithClasses()),
-		style: styles.Get(style),
+		style:     s,
 	}
 
 	renderer := blackfriday.WithRenderer(r)
