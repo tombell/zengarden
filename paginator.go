@@ -19,7 +19,7 @@ func newPaginator(site *Site) *Paginator {
 	p.site.vars["paginator"] = Context{}
 
 	if p.site.cfg.Paginate > 0 {
-		npages := int(math.Floor(float64(len(p.site.posts)) / float64(p.site.cfg.Paginate)))
+		npages := int(math.Ceil(float64(len(p.site.posts)) / float64(p.site.cfg.Paginate)))
 
 		p.vars["per_page"] = p.site.cfg.Paginate
 		p.vars["total_posts"] = len(p.site.posts)
