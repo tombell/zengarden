@@ -148,7 +148,13 @@ func convertFile(src, dst, url string, site *Site, postVars Context) error {
 		}
 
 		if isMarkdown(src) {
-			vars["content"] = renderMarkdown(content, site.cfg.Style)
+			c := renderMarkdown(content, site.cfg.Style)
+
+			vars["content"] = c
+
+			if postVars != nil {
+				postVars["content"] = c
+			}
 		} else {
 			vars["content"] = content
 		}

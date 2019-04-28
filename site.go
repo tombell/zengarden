@@ -53,17 +53,17 @@ func (s *Site) build() error {
 		s.vars["site"].(Context)[k] = v
 	}
 
+	if err := s.posts.convert(s.vars); err != nil {
+		return err
+	}
+
 	paginator := newPaginator(s)
 
 	if err := s.pages.convert(s.vars); err != nil {
 		return err
 	}
 
-	if err := paginator.generate(); err != nil {
-		return err
-	}
-
-	return s.posts.convert(s.vars)
+	return paginator.generate()
 }
 
 func (s *Site) buildPages() error {
