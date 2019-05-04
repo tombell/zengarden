@@ -83,8 +83,12 @@ func renderTemplate(src, content string, vars Context) (string, error) {
 		return "", err
 	}
 
-	if _, err := tmpl.ParseGlob(filepath.Join(includesDir, "*.html")); err != nil {
-		return "", err
+	pattern := filepath.Join(includesDir, "*.html")
+
+	if filenames, err := filepath.Glob(pattern); err == nil && len(filenames) > 0 {
+		if _, err := tmpl.ParseGlob(pattern); err != nil {
+			return "", err
+		}
 	}
 
 	var output bytes.Buffer

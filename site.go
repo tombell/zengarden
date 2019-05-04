@@ -103,6 +103,10 @@ func (s *Site) buildPages() error {
 }
 
 func (s *Site) buildPosts() error {
+	if _, err := os.Stat(postsDir); err != nil {
+		return nil
+	}
+
 	err := filepath.Walk(postsDir, func(name string, info os.FileInfo, err error) error {
 		if info == nil || name == postsDir {
 			return err
