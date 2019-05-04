@@ -79,6 +79,12 @@ func (s *Site) buildPages() error {
 			if from == s.cfg.Target || dot == '.' || dot == '_' {
 				return filepath.SkipDir
 			}
+
+			for _, exclude := range s.cfg.Excludes {
+				if strings.HasSuffix(from, exclude) {
+					return filepath.SkipDir
+				}
+			}
 		} else {
 			for _, exclude := range s.cfg.Excludes {
 				if strings.HasSuffix(from, exclude) {
