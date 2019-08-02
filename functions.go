@@ -13,6 +13,7 @@ var funcMap = template.FuncMap{
 	"dateToString": dateToString,
 	"filter":       filter,
 	"slice":        slice,
+	"trim":         trim,
 }
 
 func date(format string, date time.Time) string {
@@ -37,4 +38,8 @@ func filter(key string, val interface{}, data []Context) []Context {
 
 func slice(offset, count int, data []Context) []Context {
 	return data[offset:count]
+}
+
+func trim(needle, str string) string {
+	return strings.TrimSuffix(str, needle)
 }
