@@ -27,6 +27,10 @@ func (s *Site) build() error {
 		return err
 	}
 
+	if err := os.RemoveAll(s.cfg.Target); err != nil {
+		return err
+	}
+
 	if _, err := os.Stat(s.cfg.Target); err != nil {
 		if err := os.MkdirAll(s.cfg.Target, 0755); err != nil {
 			return err
