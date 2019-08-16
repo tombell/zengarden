@@ -58,7 +58,7 @@ jobs:
                            --name homebrew-formulae \
                            --formula Formula/zengarden.rb \
                            --tag "$(basename ${GITHUB_REF})" \
-                           --revision ${CIRCLE_SHA1} \
+                           --revision "${GITHUB_SHA}" \
                            --commit-message "Update Formula/zengarden.rb to $(basename ${GITHUB_REF})" \
                            --commit-author "Tom Bell" \
                            --commit-email "tomb@tomb.io"
