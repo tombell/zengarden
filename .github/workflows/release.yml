@@ -40,7 +40,7 @@ jobs:
       run: |
         $GOPATH/bin/releasekit -t ${GITHUB_TOKEN} \
                                -o tombell \
-                               -r zg-actions-test \
+                               -r zengarden \
                                -p $(git tag | sort -V | tail -2 | head -1) \
                                -n "$(basename ${GITHUB_REF})" \
                                --attachment dist/zg-linux-amd64 \
