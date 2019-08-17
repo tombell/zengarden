@@ -49,11 +49,10 @@ jobs:
 
     - name: Update Homebrew formula
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        FORMULA_GITHUB_TOKEN: ${{ secrets.FORMULA_GITHUB_TOKEN }}
         GOPATH: /home/runner/work/
       run: |
-        go get -u github.com/tombell/brewer/cmd/brewer
-        $GOPATH/bin/brewer --token ${GITHUB_TOKEN} \
+        $GOPATH/bin/brewer --token ${FORMULA_GITHUB_TOKEN} \
                            --owner tombell \
                            --name homebrew-formulae \
                            --formula Formula/zengarden.rb \
