@@ -37,7 +37,7 @@ func (s *Site) build() error {
 		}
 	}
 
-	sort.Sort(sort.Reverse(s.pages))
+	sort.Sort(s.pages)
 	sort.Sort(sort.Reverse(s.posts))
 
 	for _, category := range s.categories {
