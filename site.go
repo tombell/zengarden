@@ -102,6 +102,12 @@ func (s *Site) buildPages() error {
 				p.vars["url"] = p.toURL()
 				p.vars["date"] = info.ModTime()
 
+				// XXX: this is used to read the front matter so it's available
+				// beofre the page is "converted". Probably need to make
+				// specific function for parsing front matter from pages so it's
+				// not inefficiently called twice.
+				parseFile(from, p.vars)
+
 				s.pages = append(s.pages, p)
 			}
 		}
